@@ -1,21 +1,21 @@
 //
-//  MovieDetailEndpoint.swift
+//  DetailsEndPoint.swift
 //  Movie Explorer
 //
-//  Created by Dariga on 16.06.2023.
+//  Created by Dariga on 12.08.2023.
 //
 
 import Foundation
 
-enum MovieDetailEndpoint {
-    case getMovie(id: Int)
+enum DetailsEndpoint {
+    case getDetails(movieId: Int)
 }
 
-extension MovieDetailEndpoint: RequestProviding {
+extension DetailsEndpoint: RequestProviding {
     var urlRequest: URLRequest {
         switch self {
-        case .getMovie(let id):
-            guard let url = URL(string: Constants.apiHost + "/movie/\(id)?language=en-US") else { fatalError() }
+        case .getDetails(let movieId):
+            guard let url = URL(string: Constants.apiHost + "/movie/\(movieId)?language=en-US" ) else { fatalError() }
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = "GET"
             return urlRequest
@@ -24,7 +24,7 @@ extension MovieDetailEndpoint: RequestProviding {
     
     var shouldAddAuthorizationToken: Bool {
         switch self {
-        case .getMovie:
+        case .getDetails:
             return true
         }
     }

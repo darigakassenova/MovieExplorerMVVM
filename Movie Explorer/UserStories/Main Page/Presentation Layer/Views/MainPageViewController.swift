@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Foundation
+import Kingfisher
 
 class MainPageViewController: UIViewController {
     private let viewModel: MainPageViewModel
@@ -35,8 +37,25 @@ class MainPageViewController: UIViewController {
     
     private func setupUI() {
         setupCollectionView()
+        setupNavigationBar()
     }
     
+    private func setupNavigationBar() {
+        let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonTapped))
+        navigationItem.rightBarButtonItem = searchButton
+        navigationItem.rightBarButtonItem?.tintColor = .white
+    }
+    
+    @objc
+    func searchButtonTapped() {
+        let network = Network()
+        let dataSource = SearchMoviesDataRemoteSource(network: network)
+        let repository = SearchMoviesRepository(remoteDataSource: dataSource)
+        let viewModel = SearchMovieViewModel(repository: repository)
+        let viewController = SearchMovieViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: generateLayout())
         view.addSubview(collectionView)
@@ -61,8 +80,8 @@ class MainPageViewController: UIViewController {
     private func bindViewModel() {
         viewModel.didStateChange = { [weak self] in
             guard let self = self else { return }
-            self.refreshControl.endRefreshing()
             self.collectionView.reloadData()
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -121,6 +140,27 @@ extension MainPageViewController: UICollectionViewDelegate {
         default:
             return UICollectionReusableView()
         }
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard viewModel.state == .content else { return }
+        var id: Int
+        switch viewModel.sections[indexPath.section] {
+        case .nowPlaying(let movies):
+            id = movies[indexPath.row].id
+        case .topRated(let movies):
+            id = movies[indexPath.row].id
+        case .popular(let movies):
+            id = movies[indexPath.row].id
+        case .upcoming(let movies):
+            id = movies[indexPath.row].id
+        }
+        
+        let network = Network()
+        let dataSource = DetailsRemoteDataSource(network: network)
+        let repository = DetailRepository(dataSource: dataSource)
+        let viewModel = DetailViewModel(id: id, repository: repository)
+        let viewController = DetailViewController(viewModel: viewModel)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

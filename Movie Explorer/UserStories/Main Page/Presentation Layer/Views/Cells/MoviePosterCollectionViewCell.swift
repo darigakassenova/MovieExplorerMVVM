@@ -9,7 +9,6 @@ import UIKit
 import Kingfisher
 
 class MoviePosterCollectionViewCell: UICollectionViewCell {
-    static let identifier = "MoviePosterCollectionViewCell"
     
     private let posterImage: UIImageView = {
         let imageView = UIImageView()
