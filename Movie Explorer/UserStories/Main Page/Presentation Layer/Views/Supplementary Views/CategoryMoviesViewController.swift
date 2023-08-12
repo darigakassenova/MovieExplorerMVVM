@@ -18,6 +18,7 @@ class CategoryMoviesViewController: UIViewController {
         return control
     }()
     
+    
     init(viewModel: CategoryMoviesViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

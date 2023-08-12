@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 class CategoryMoviesViewModel {
     private let repository: MoviesByCategoryRepositoryInterface
     private let moviesCategory: MoviesCategory
